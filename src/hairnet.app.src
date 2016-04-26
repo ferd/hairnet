@@ -1,0 +1,17 @@
+{application, hairnet,
+ [{description, "An Erlang library wrapping AES-GCM (AEAD) crypto in a Fernet-like interface"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications,
+   [kernel,
+    stdlib,
+    crypto,
+    base64url
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.

@@ -1,0 +1,12 @@
+[{<<"base64url">>,
+  {git,"https://github.com/dvv/base64url.git",
+       {ref,"9d0fe71ef6dfd2bf623e64ad495098c9eabbf0ef"}},
+  0},
+ {<<"pkcs7">>,
+  {git,"https://github.com/camshaft/pkcs7.erl.git",
+       {ref,"56b11a13f6743b5610adab934389972fc530a7a1"}},
+  0},
+ {<<"proper">>,
+  {git,"https://github.com/manopapad/proper.git",
+       {ref,"6ed00119629e1e7bf5d220c215e76f221a7d59cb"}},
+  1}].
