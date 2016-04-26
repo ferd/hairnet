@@ -101,8 +101,7 @@ verify_and_decrypt_token(EncodedToken, EncodedKey, TTL, Now) ->
         throw:invalid_base64 = Err -> {error, Err};
         throw:bad_version = Err -> {error, Err};
         throw:too_old = Err -> {error, Err};
-        throw:too_new = Err -> {error, Err};
-        throw:incorrect_mac = Err -> {error, Err}
+        throw:too_new = Err -> {error, Err}
     end.
 
 %% @private Properly, an IV should never be reused with the same key twice

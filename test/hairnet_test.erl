@@ -157,3 +157,13 @@ invalid_payload_format_test() ->
     ?assertEqual({error, payload_format},
                  hairnet:verify_and_decrypt_token(Tok2, Key, 10, Now)).
 
+
+invalid_payload_format_alt_test() ->
+    Msg = <<"hello">>,
+    Key = "cw_0x689RpI-jtRR7oE8h_eQsKImvJapLeSbXpwF4e4=",
+    IV = <<0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15>>,
+    B64 = base64url:encode_mime(<<"fakepieceofdata">>),
+    ?assertEqual({error, payload_format},
+                 hairnet:verify_and_decrypt_token(B64, Key, infinity)).
+
+
