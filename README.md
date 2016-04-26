@@ -1,7 +1,7 @@
 hairnet
 =====
 
-A take on [https://github.com/fernet/fernet-erl](fernet) using AES-GCM
+A take on [fernet](https://github.com/fernet/fernet-erl) using AES-GCM
 ([AEAD](https://en.wikipedia.org/wiki/Authenticated_encryption))
 rather than fernet's AES-128 in CBC mode + HMAC.
 
@@ -29,7 +29,9 @@ doing decryption to validate for staleness.
 2> Token = hairnet:generate_token("hello", Key).
 <<"AQAAAABXH4wKw8DqUtDjJxAX3BuEHGP9xke0tfY-73uzVCpa1iT5f1wgAAAABbhBUeFl">>
 3> hairnet:verify_and_decrypt_token(Token, Key, infinity).
+{ok, <<"hello">>}
 4> TTL = 10. % 10 Seconds
+10
 5> hairnet:verify_and_decrypt_token(Token, Key, TTL).
 {error, too_old}
 ```
@@ -50,3 +52,8 @@ Build
 -----
 
     $ rebar3 compile
+
+Test
+----
+
+    $ rebar3 do eunit, dialyzer
