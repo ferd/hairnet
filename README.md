@@ -1,7 +1,7 @@
 hairnet
 =====
 
-A take on [https://github.com/fernet/fernet-erl](fernet) using AES-GCM
+A take on [fernet](https://github.com/fernet/fernet-erl) using AES-GCM
 ([AEAD](https://en.wikipedia.org/wiki/Authenticated_encryption))
 rather than fernet's AES-128 in CBC mode + HMAC.
 
