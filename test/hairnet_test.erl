@@ -143,7 +143,9 @@ invalid_base64_test() ->
     ?assertEqual({error, invalid_base64},
                  hairnet:verify_and_decrypt_token(<<"%%%%%%%",Tok/binary>>, Key, 10, Now)).
 
-invalid_payload_format_test() ->
+%% adding garbage at the end of the payload is like trying to flip bits in it
+%% since the size of the payload is contextual.
+invalid_payload_test() ->
     Msg = <<"hello">>,
     Key = "cw_0x689RpI-jtRR7oE8h_eQsKImvJapLeSbXpwF4e4=",
     IV = <<0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15>>,
@@ -154,14 +156,12 @@ invalid_payload_format_test() ->
     Tok2 = hairnet:encode_token(
         << (hairnet:payload(TS1, IV1, CipherText1, Tag1))/binary, "garbage" >>
     ),
-    ?assertEqual({error, payload_format},
+    ?assertEqual({error, incorrect_mac},
                  hairnet:verify_and_decrypt_token(Tok2, Key, 10, Now)).
 
 
 invalid_payload_format_alt_test() ->
-    Msg = <<"hello">>,
     Key = "cw_0x689RpI-jtRR7oE8h_eQsKImvJapLeSbXpwF4e4=",
-    IV = <<0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15>>,
     B64 = base64url:encode_mime(<<"fakepieceofdata">>),
     ?assertEqual({error, payload_format},
                  hairnet:verify_and_decrypt_token(B64, Key, infinity)).

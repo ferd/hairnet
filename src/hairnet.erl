@@ -56,12 +56,12 @@ decode_key(Key) ->
 
 %% @doc Generate a token (encrypt + sign) for the provided `Message'
 %% using the supplied `Key'.
--spec generate_token(iodata(), key()) -> encoded_token().
+-spec generate_token(iodata(), encoded_key()) -> encoded_token().
 generate_token(Message, Key) ->
     generate_token(Message, generate_iv(), erlang_system_seconds(), Key).
 
 %% @doc Verify a token and extract the message
--spec verify_and_decrypt_token(encoded_token(), key(), TTL::integer() | infinity) ->
+-spec verify_and_decrypt_token(encoded_token(), encoded_key(), TTL::integer() | infinity) ->
     {ok, binary()} | {error, atom()}.
 verify_and_decrypt_token(Token, Key, infinity) ->
     verify_and_decrypt_token(Token, Key, infinity, undefined);
@@ -123,32 +123,14 @@ block_decrypt(Key, IV, Tag, Message, EncodedSeconds) ->
 %% care for lengths for payloads and tags that fit within 32 bits or
 %% 64 bits integers for representation; hopefully much shorter.
 payload(EncodedSeconds, IV, CipherText, Tag) ->
-    TextSize = erlang:iolist_size(CipherText),
     16 = erlang:iolist_size(Tag), % assertions!
-    SizeBits = if TextSize =< ?MAX_32 -> 32
-                ; TextSize =< ?MAX_64 -> 64
-               end,
-    <<?VERSION, EncodedSeconds/binary, IV/binary, Tag/binary, SizeBits/big-unsigned,
-      TextSize:SizeBits/unsigned, CipherText/binary>>.
+    <<?VERSION, EncodedSeconds/binary, IV/binary, Tag/binary, CipherText/binary>>.
 
-unpack(<<Vsn:1/binary, TS:?TS_BYTES/binary, IV:?IV_BYTES/binary, Tag:?TAG_SIZE/binary,
-         32/big-unsigned, Payload/binary>>) ->
-    CipherText = unpack_payload(32, Payload),
-    {Vsn, TS, IV, CipherText, Tag};
-unpack(<<Vsn:1/binary, TS:?TS_BYTES/binary, IV:?IV_BYTES/binary, Tag:?TAG_SIZE/binary,
-         64/big-unsigned, Payload/binary>>) ->
-    CipherText = unpack_payload(64, Payload),
+unpack(<<Vsn:1/binary, TS:?TS_BYTES/binary, IV:?IV_BYTES/binary,
+         Tag:?TAG_SIZE/binary, CipherText/binary>>) ->
     {Vsn, TS, IV, CipherText, Tag};
 unpack(_) ->
     throw(payload_format).
-
-unpack_payload(TextSize, Payload) ->
-    try
-        <<Size:TextSize/unsigned, Data/binary>> = Payload,
-        <<_CipherText:Size/binary>> = Data
-    catch
-        _:_ -> throw(payload_format)
-    end.
 
 encode_token(Token) ->
     base64url:encode_mime(Token).
