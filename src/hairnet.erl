@@ -21,7 +21,7 @@
 %% API functions
 %%====================================================================
 -define(VERSION, 1).
--define(TAG_SIZE, 16). % 128 bits
+-define(TAG_BYTES, 16). % 128 bits
 -define(IV_BYTES, 16). % 128 bits
 -define(TS_BYTES, 8).  % 64 bits
 -define(PL_BYTES, 1).  % 8 bits
@@ -119,15 +119,15 @@ block_encrypt(Key, IV, Message, EncodedSeconds) ->
 block_decrypt(Key, IV, Tag, Message, EncodedSeconds) ->
     crypto:block_decrypt(aes_gcm, Key, IV, {EncodedSeconds, Message, Tag}).
 
-%% @private Encode the given payload. For the sake of simplicity, we only
-%% care for lengths for payloads and tags that fit within 32 bits or
-%% 64 bits integers for representation; hopefully much shorter.
+%% @private Encode the given payload.
+%% The format assumes the tag size used with AES-GCM is always using the
+%% maximum 16 bytes both when encoding and decoding.
 payload(EncodedSeconds, IV, CipherText, Tag) ->
-    16 = erlang:iolist_size(Tag), % assertions!
+    ?TAG_BYTES = erlang:iolist_size(Tag), % assertions!
     <<?VERSION, EncodedSeconds/binary, IV/binary, Tag/binary, CipherText/binary>>.
 
 unpack(<<Vsn:1/binary, TS:?TS_BYTES/binary, IV:?IV_BYTES/binary,
-         Tag:?TAG_SIZE/binary, CipherText/binary>>) ->
+         Tag:?TAG_BYTES/binary, CipherText/binary>>) ->
     {Vsn, TS, IV, CipherText, Tag};
 unpack(_) ->
     throw(payload_format).
