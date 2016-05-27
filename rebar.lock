@@ -1,4 +1,1 @@
-[{<<"base64url">>,
-  {git,"https://github.com/dvv/base64url.git",
-       {ref,"9d0fe71ef6dfd2bf623e64ad495098c9eabbf0ef"}},
-  0}].
+[{<<"base64url">>,{pkg,<<"base64url">>,<<"0.0.1">>},0}].
