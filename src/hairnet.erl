@@ -1,5 +1,5 @@
 %%% @author Fred Hebert <mononcqc@ferd.ca>
-%%% @copyright (C) 2016, Heroku
+%%% @copyright (c) 2016, Fred Hebert <mononcqc@ferd.ca>.
 %%% @doc
 %%%
 %%% Implements fernet-equivalent token generation and verification,
