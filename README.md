@@ -61,10 +61,7 @@ Test
 Warnings
 --------
 
-The current code is pending any form of review. Using it in production
-should be done at your own risk.
-
-Additionally, the [publications from NIST on the
+The [publications from NIST on the
 algorithm](http://csrc.nist.gov/publications/nistpubs/800-38D/SP-800-38D.pdf)
 have the following specifications:
 
@@ -85,6 +82,8 @@ have the following specifications:
 > 2^21 invocations with 96-bit IVs, and 2^20 invocations with 128-bit IVs.
 
 This implementation uses Erlang's `crypto:strong_rand_bytes(16)` to generate
-128-bit IVs. As such, it would be recommended to rotate the key used to
-encrypt content once such limits are reached to avoid weakening the security
-of the private key.
+128-bit IVs.
+
+As such, it would be recommended to rotate the key used to encrypt content once
+such limits (2^21 calls locally, or 2^32 overall) are reached to avoid
+weakening the security of the private key.
