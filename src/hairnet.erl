@@ -114,10 +114,10 @@ generate_iv() ->
     crypto:strong_rand_bytes(16).
 
 block_encrypt(Key, IV, Message, EncodedSeconds) ->
-    crypto:block_encrypt(aes_gcm, Key, IV, {EncodedSeconds, Message}).
+    crypto:crypto_one_time_aead(aes_256_gcm, Key, IV, Message, EncodedSeconds, ?TAG_BYTES, true).
 
 block_decrypt(Key, IV, Tag, Message, EncodedSeconds) ->
-    crypto:block_decrypt(aes_gcm, Key, IV, {EncodedSeconds, Message, Tag}).
+    crypto:crypto_one_time_aead(aes_256_gcm, Key, IV, Message, EncodedSeconds, Tag, false).
 
 %% @private Encode the given payload.
 %% The format assumes the tag size used with AES-GCM is always using the
@@ -139,7 +139,7 @@ decode_token(EncodedToken) ->
     try
         base64url:decode(EncodedToken)
     catch
-        error:{badarg, _Char} -> throw(invalid_base64)
+        error:badarg -> throw(invalid_base64)
     end.
 
 %%-------------------------------------------------------------------
