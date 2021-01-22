@@ -139,7 +139,7 @@ decode_token(EncodedToken) ->
     try
         base64url:decode(EncodedToken)
     catch
-        error:{badarg, _Char} -> throw(invalid_base64)
+        error:badarg -> throw(invalid_base64)
     end.
 
 %%-------------------------------------------------------------------
